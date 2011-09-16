@@ -41,7 +41,6 @@ class TinyUacUser extends AppModel {
 	    )
 		
 	);
-
 	
 	public function passwordsMatch($password_2) {
 		
@@ -70,6 +69,8 @@ class TinyUacUser extends AppModel {
 			$this->data[$this->alias]['password'] = Security::hash($this->data[$this->alias]['password_1'], null, true);
 			return true;
 		}
+		
+		return parent::beforeSave($options);
 		
 	}
 	

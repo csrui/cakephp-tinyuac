@@ -6,11 +6,10 @@ TinyUac provides a simple method for authenticating users preventing coding over
 
 ### Add routes for better looking urls
 
-	Router::connect('/users/:action', 
+	Router::connect('/users/:action/*', 
 		array('admin' => null, 'plugin' => 'tiny_uac', 'controller' => 'tiny_uac_users'), 
-		array('action' => '(login|logout|password\_recover|password\_change)')
+		array('action' => '(login|logout|password_recover|password_recover_set|password_change)')
 	);
-
 
 ### Add configuration to AppController
 
