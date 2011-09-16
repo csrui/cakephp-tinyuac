@@ -2,93 +2,54 @@
 
 class TinyUacUsersController extends AppController {
 	
-	// public function beforeFilter() {
-	// 	
-	// 	parent::beforeFilter();
-	// 	
-	// 	$this->Auth->allow('add', 'view');
-	// 	
-	// }
-
-	// public function view($key = null) {
-	// 
-	// 	if (is_null($key)) {
-	// 		$this->redirect(array('action' => 'email', $this->Auth->user('key')));
-	// 	}
-	// 
-	// 	$this->User->Contain('Branding');
-	// 	$branding = $this->User->findByShareKey($key);
-	// 	$this->set('branding', $branding);
-	// 	$this->set('email', $branding['User']['share_key'] . '@cargoshipapp.com');
-	// 	
-	// }
+	public function beforeFilter() {
+		
+		parent::beforeFilter();
+		
+		# Sets the view path to the current app/views/users 
+		$this->viewPath = 'users';
+		
+	}
 	
-	protected function add() {
-				
+	public function login() {
+
 		if (!empty($this->data)) {
-			$this->User->create();
-			if ($this->User->save($this->data)) {
-				$this->User->generateKeys($this->User->id);
-				return true;
-			} else {
-				unset($this->data['User']['password']);
-				return false;
+
+			$this->data = $this->TinyUacAuth->Auth->hashPasswords($this->data);
+
+			if ($this->TinyUacAuth->Auth->login($this->data)) {
+				$this->redirect($this->TinyUacAuth->Auth->loginRedirect);
 			}
-		}
-		
-	}
-
-	protected function edit() {
-
-		if (!empty($this->data)) {
-			
-			$this->data['User']['id'] = $this->Auth->user('id');
-			return $this->User->save($this->data));
 			
 		}
 		
-		if (empty($this->data)) {
-			$this->data = $this->User->read(null, $this->Auth->user('id'));
-		}
-	}
-	
-	protected function change_password() {
-		
-		if (!empty($this->data)) {
-			
-			$this->User->id = $this->Auth->user('id');
-
-			$this->data['User']['password_1'] = $this->Auth->password($this->data['User']['password_1']);
-			$this->data['User']['password_2'] = $this->Auth->password($this->data['User']['password_2']);
-			
-			return $this->User->save($this->data));
-			
-		}
-		
-		unset($this->data['User']);
-		
-	}
-
-	protected function login() {
+		unset($this->data['TinyUacUser']['password']);
 		
 	}
 	
-	protected function logout() {
+	public function logout() {
 		
 		$this->autoRender = false;
 		$this->Session->destroy();
-		$this->redirect($this->Auth->logout());
+		$this->redirect($this->TinyUacAuth->logout());
 		
 	}
-	
-	protected function regenerate_keys() {
+
+	public function password_change() {
 		
-		$this->autoRender = false;
+		if (!empty($this->data)) {
+			
+			$this->TinyUacUser->id = $this->TinyUacAuth->get('id');
+			
+			if ($this->TinyUacUser->save($this->data)) {
+				$this->Session->setFlash(__('Your password was changed', true));
+				$this->redirect($this->TinyUacAuth->Auth->loginRedirect);
+			}
+			
+		}
 		
-		$this->User->generateKeys($this->Auth->user('id'));		
-		$this->Session->setFlash(__('New keys generated', true));		
-		$this->redirect($this->referer());
+		unset($this->data['TinyUacUser']);
 		
 	}
-	
+
 }

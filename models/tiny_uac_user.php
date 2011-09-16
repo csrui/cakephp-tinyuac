@@ -4,6 +4,8 @@ class TinyUacUser extends AppModel {
 	
 	public $displayField = 'username';
 	
+	public $useTable = 'users';
+	
 	var $validate = array(
 		'username' => array(
 			'email' => array(
@@ -43,6 +45,10 @@ class TinyUacUser extends AppModel {
 	
 	public function passwordsMatch($password_2) {
 		
+		# If password_2 is empty then fail
+		if (strlen($password_2['password_2']) == false) return false;
+
+		# Check if password_1 is equal to password_2
 		return $password_2['password_2'] == $this->data[$this->alias]['password_1'];
 		
 	}
@@ -59,9 +65,9 @@ class TinyUacUser extends AppModel {
 	}
 	
 	public function beforeSave($options) {
-		
+			
 		if (!empty($this->data[$this->alias]['password_1'])) {
-			$this->data[$this->alias]['password'] = $this->data[$this->alias]['password_1'];
+			$this->data[$this->alias]['password'] = Security::hash($this->data[$this->alias]['password_1'], null, true);
 			return true;
 		}
 		
