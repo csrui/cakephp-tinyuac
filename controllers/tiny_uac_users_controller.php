@@ -2,6 +2,10 @@
 
 class TinyUacUsersController extends AppController {
 	
+	public $components = array(
+		'Email'
+	);
+	
 	public function beforeFilter() {
 		
 		parent::beforeFilter();
@@ -76,16 +80,17 @@ class TinyUacUsersController extends AppController {
 		$this->set(array(
 			'email' => $user['TinyUacUser']['username'],
 			'new_hash' => $new_hash,
-			'hashed_url' => configure::read('App.url') . $hashed_url
+			'hashed_url' => 'http://' . configure::read('App.domain') . $hashed_url
 		));
 		
-		// $this->EmailQueue->to = $user['UacUser']['email'];
-		// $this->EmailQueue->from = sprintf('%s <%s>', Configure::read('App.name'), Configure::read('Email.username'));
-		// $this->EmailQueue->subject = sprintf('%s %s', Configure::read('App.name'), __('password recovery', true));
-		// $this->EmailQueue->template = $this->controller->action;
-		// $this->EmailQueue->sendAs = 'both';
-		// $this->EmailQueue->delivery = 'db';
-		// $this->EmailQueue->send();
+		$this->Email->to = $user['TinyUacUser']['username'];
+		$this->Email->from = sprintf('%s <%s>', Configure::read('App.name'), Configure::read('Email.username'));
+		$this->Email->subject = sprintf('%s %s', Configure::read('App.name'), __('password recovery', true));
+		$this->Email->template = $this->action;
+		$this->Email->sendAs = 'both';
+		$this->Email->delivery = configure::read('Email.delivery');
+		$this->Email->smtpOptions = configure::read('Email');
+		$this->Email->send();
 
 		$this->Session->setFlash(__('You will receive an e-mail shortly', true));
 		$this->redirect('/');
