@@ -16,26 +16,12 @@ class TinyUacUsersController extends AppController {
 	}
 	
 	public function login() {
-
-		if (!empty($this->data)) {
-
-			$this->data = $this->TinyUacAuth->Auth->hashPasswords($this->data);
-
-			if ($this->TinyUacAuth->Auth->login($this->data)) {
-				$this->redirect($this->TinyUacAuth->Auth->loginRedirect);
-			}
-			
-		}
-		
-		unset($this->data['TinyUacUser']['password']);
 		
 	}
 	
 	public function logout() {
-		
-		$this->autoRender = false;
-		$this->Session->destroy();
-		$this->redirect($this->TinyUacAuth->logout());
+
+		$this->TinyUacAuth->logout();
 		
 	}
 
@@ -47,7 +33,7 @@ class TinyUacUsersController extends AppController {
 			
 			if ($this->TinyUacUser->save($this->data)) {
 				$this->Session->setFlash(__('Your password was changed', true));
-				$this->redirect($this->TinyUacAuth->Auth->loginRedirect);
+				$this->redirect($this->Auth->loginRedirect);
 			}
 			
 		}

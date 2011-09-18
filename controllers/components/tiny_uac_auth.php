@@ -2,11 +2,7 @@
 
 class TinyUacAuthComponent extends Object {
 
-	var $components = array(
-		'Auth', 
-		'Session'
-	);
-	
+
 	private $controller = null;
 	
 	private $user = null;
@@ -22,7 +18,7 @@ class TinyUacAuthComponent extends Object {
 				'userModel' => 'TinyUac.TinyUacUser',
 				'userScope' => array('TinyUacUser.active' => 1),
 				'fields' => array('username' => 'username', 'password' => 'password'),
-				'autoRedirect' => false,
+				'autoRedirect' => true,
 				'loginAction' => array('admin' => null, 'plugin' => 'tiny_uac', 'controller' => 'tiny_uac_users', 'action' => 'login'),
 				'loginRedirect' => '/',
 				'logoutRedirect' => '/',
@@ -36,15 +32,17 @@ class TinyUacAuthComponent extends Object {
 		foreach($custom_settings as $component => $settings) {
 		
 			foreach($settings as $set => $val) {
-				$this->$component->$set = $val;
+				$this->Controller()->$component->$set = $val;
 			}
 
 		}
 		
+		// pr($this->Controller()->Auth);
+		
 		$this->user = ClassRegistry::init('TinyUac.TinyUacUser');
 				
 	}
-
+		
 	//called after Controller::beforeFilter()
 	public function startup(&$controller) {
 	}
@@ -62,8 +60,8 @@ class TinyUacAuthComponent extends Object {
 	public function logout() {
 		
 		$this->Controller()->autoRender = false;
-		$this->Session->destroy();
-		$this->Controller()->redirect($this->Auth->logout());
+		$this->Controller()->Session->destroy();
+		$this->Controller()->redirect($this->Controller()->Auth->logout());
 		
 	}
 	
@@ -95,7 +93,7 @@ class TinyUacAuthComponent extends Object {
 	 * @author Rui Cruz
 	 */
 	public function get($param = null) {
-		return $this->Auth->user($param);
+		return $this->Controller()->Auth->user($param);
 	}
 
 
