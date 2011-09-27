@@ -29,14 +29,11 @@ TinyUac provides a simple method for authenticating users preventing coding over
 ### Reaching over session data
 
 	$this->TinyUacAuth->get('username');
-	
-### Reaching the CakePHP Auth component
-
-	$this->TinyUacAuth->Auth->deny('*');
-	
+		
 ## Methods automatically available
 
 * login
 * logout
 * password\_recover
+* password\_recover\_set
 * password\_change	
