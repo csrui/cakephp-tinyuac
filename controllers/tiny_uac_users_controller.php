@@ -10,6 +10,7 @@ class TinyUacUsersController extends AppController {
 		
 		parent::beforeFilter();
 		
+		$this->Auth->allow('password_recover', 'password_recover_set');
 		# Sets the view path to the current app/views/users 
 		$this->viewPath = 'users';
 		
@@ -43,6 +44,11 @@ class TinyUacUsersController extends AppController {
 	}
 
 	public function password_recover() {
+		
+		# CHECK IF EMAIL CONFIGURATION EXISTS
+		if(!is_array(configure::read('Email'))) {			
+			trigger_error('Email configuration is missing', E_USER_ERROR);			
+		}
 		
 		if (empty($this->data)) return false;
 		
