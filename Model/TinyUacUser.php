@@ -40,7 +40,7 @@ abstract class TinyUacUser extends AppModel {
 				'rule' => array('checkCurrentPassword'),
 				'message' => 'Current password doesn\'t match',
 				'allowEmpty' => false,
-				'required' => true,
+				'required' => false,
 				//'last' => false, // Stop validation after this rule
 			),
 		)
